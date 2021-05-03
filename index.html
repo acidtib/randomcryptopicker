@@ -115,7 +115,7 @@
     function render(symbol) {
       $('.symbol').html(symbol.symbol)
 
-      $('.exchanges .binance').attr("href", `https://www.binance.us/en/trade/${symbol.baseAsset}_${symbol.quoteAsset}`);
+      $('.exchanges .binance').attr("href", `https://www.binance.us/en/trade/pro/${symbol.baseAsset}_${symbol.quoteAsset}`);
       
       $('.loading').hide()
       $('.picker-button').show()
