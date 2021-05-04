@@ -3,8 +3,8 @@
 const fs = require('fs');
 const https = require('https');
 
-function fetchSymbols() {
-  https.get('https://api.binance.us/api/v3/exchangeInfo', (resp) => {
+function fetch(url, exchange) {
+  https.get(url, (resp) => {
     const statusCode = resp.statusCode
     let data = '';
 
@@ -17,17 +17,34 @@ function fetchSymbols() {
     resp.on('end', () => {
       data = JSON.parse(data)
 
-      saveSymbols(data)
+      readSymbols(data, exchange)
     });
 
   }).on("error", (err) => {
     console.log("Error: " + err.message);
-  });  
+  });
 }
 
-function saveSymbols(data) {
+function readSymbols(data, exchange) {
   let payload = []
   let robinhood = false
+  const filePath = "symbols.json"
+
+  if (fs.existsSync(filePath)) {
+    payload = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  }
+
+  let binanceus = false
+  let binancecom = false
+
+  switch (exchange) {
+    case 'binanceus':
+      binanceus = true
+      break;
+    case 'binancecom':
+      binancecom = true
+      break;
+  }
 
   data.symbols.forEach(function(symbol) {
     const baseAsset = symbol.baseAsset
@@ -38,15 +55,30 @@ function saveSymbols(data) {
       baseAsset: baseAsset,
       quoteAsset: quoteAsset,
       exchange: {
-        binanceus: true,
-        binancecom: false,
+        binanceus: binanceus,
+        binancecom: binancecom,
         robinhood: false
       }
       
     });
   })
 
-  fs.writeFileSync('symbolPairs.json', JSON.stringify(payload));
+  fs.writeFileSync(filePath, JSON.stringify(payload));
+}
+
+function deleteFile(filePath) {
+  if (fs.existsSync(filePath)) {
+    fs.unlink(filePath, (err) => {console.log(err)})
+  }
+  
+}
+
+function fetchSymbols() {
+  deleteFile('symbols.json')
+
+  // fetch('https://api.binance.us/api/v3/exchangeInfo', 'binanceus')
+
+  fetch('https://api.binance.com/api/v3/exchangeInfo', 'binancecom')
 }
 
 
