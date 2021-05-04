@@ -63,6 +63,8 @@ function readSymbols(data, exchange) {
     });
   })
 
+  payload = payload.sort(() => Math.random() - 0.5)
+
   fs.writeFileSync(filePath, JSON.stringify(payload));
 }
 
@@ -76,7 +78,7 @@ function deleteFile(filePath) {
 function fetchSymbols() {
   deleteFile('symbols.json')
 
-  // fetch('https://api.binance.us/api/v3/exchangeInfo', 'binanceus')
+  fetch('https://api.binance.us/api/v3/exchangeInfo', 'binanceus')
 
   fetch('https://api.binance.com/api/v3/exchangeInfo', 'binancecom')
 }
