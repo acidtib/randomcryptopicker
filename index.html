@@ -122,7 +122,6 @@
     }
 
     function render(symbol) {
-      console.log(symbol)
       $('.symbol').html(symbol.symbol)
 
       if (symbol.exchange.binanceus) {
@@ -132,7 +131,13 @@
       if (symbol.exchange.binancecom) {
         $('.exchanges .binance').attr("href", `https://www.binance.com/en/trade/pro/${symbol.baseAsset}_${symbol.quoteAsset}`);
       }
-      
+
+      if (symbol.exchange.robinhood) {
+        $('.exchanges .robinhood').attr("href", `https://robinhood.com/crypto/${symbol.baseAsset}`);
+        $('.exchanges .robinhood').show()
+      } else {
+        $('.exchanges .robinhood').hide()
+      }
       
       $('.loading').hide()
       $('.picker-button').show()

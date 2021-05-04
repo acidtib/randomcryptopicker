@@ -25,9 +25,13 @@ function fetch(url, exchange) {
   });
 }
 
+function checkRobinhood(coin) {
+  const coins = ["BTC", "DOGE", "ETC", "ETH", "BSV", "BCH", "LTC"];
+  return coins.includes(coin);
+}
+
 function readSymbols(data, exchange) {
   let payload = []
-  let robinhood = false
   const filePath = "symbols.json"
 
   if (fs.existsSync(filePath)) {
@@ -36,6 +40,7 @@ function readSymbols(data, exchange) {
 
   let binanceus = false
   let binancecom = false
+  let robinhood = false
 
   switch (exchange) {
     case 'binanceus':
@@ -50,6 +55,8 @@ function readSymbols(data, exchange) {
     const baseAsset = symbol.baseAsset
     const quoteAsset = symbol.quoteAsset
 
+    robinhood = checkRobinhood(baseAsset)
+
     payload.push({
       symbol: `${baseAsset}-${quoteAsset}`,
       baseAsset: baseAsset,
@@ -57,7 +64,7 @@ function readSymbols(data, exchange) {
       exchange: {
         binanceus: binanceus,
         binancecom: binancecom,
-        robinhood: false
+        robinhood: robinhood
       }
       
     });
